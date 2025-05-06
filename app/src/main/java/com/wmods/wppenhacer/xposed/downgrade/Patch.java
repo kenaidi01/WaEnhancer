@@ -40,6 +40,13 @@ public class Patch {
 
 
         switch (Build.VERSION.SDK_INT) {
+        	case Build.VERSION_CODES.VANILLA_ICE_CREAM: // 35
+                findAndHookMethod("com.android.server.pm.PackageManagerServiceUtils", lpparam.classLoader,
+                        "checkDowngrade",
+                        "com.android.server.pm.pkg.AndroidPackage",
+                        "android.content.pm.PackageInfoLite", hookDowngrade
+                );
+                break;
             case Build.VERSION_CODES.UPSIDE_DOWN_CAKE: // 34
                 findAndHookMethod("com.android.server.pm.PackageManagerServiceUtils", lpparam.classLoader,
                         "checkDowngrade",
