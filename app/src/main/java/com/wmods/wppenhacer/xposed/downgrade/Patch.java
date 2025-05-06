@@ -18,7 +18,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
 public class Patch {
     public static void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam, XSharedPreferences prefs) throws Throwable {
-        if (!("android".equals(lpparam.packageName)) || !(lpparam.processName.equals("android")))
+        if (!Objects.equals("android", lpparam.packageName) || !Objects.equals("android", lpparam.processName))
             return;
         XC_MethodHook hookDowngrade = new XC_MethodHook() {
             @Override
