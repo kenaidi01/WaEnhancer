@@ -42,7 +42,7 @@ android {
     defaultConfig {
         applicationId = "com.wmods.wppenhacer"
         minSdk = 28
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 150
         versionName = "1.5.0-DEV ($gitHash)"
         multiDexEnabled = true
