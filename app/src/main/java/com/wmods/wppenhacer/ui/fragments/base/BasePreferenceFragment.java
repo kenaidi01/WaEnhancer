@@ -52,7 +52,11 @@ public abstract class BasePreferenceFragment extends PreferenceFragmentCompat im
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         chanceStates(null);
         monitorPreference();
-        return super.onCreateView(inflater, container, savedInstanceState);
+        View root = super.onCreateView(inflater, container, savedInstanceState);
+        int actionBarSize = (int) requireContext().getResources().getDimension(
+            androidx.appcompat.R.dimen.abc_action_bar_default_height_material);
+        root.setPadding(0, actionBarSize, 0, 0);
+        return root;
     }
 
     @Override
