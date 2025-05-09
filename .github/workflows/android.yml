@@ -7,7 +7,7 @@ jobs:
   build:
     name: Build WaEnhancer
     permissions:
-      contents: read  # More secure than write-all
+      contents: write  # Changed from read to write to allow creating releases
       actions: write  # For uploading artifacts
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && !contains(github.event.head_commit.message, 'Merge')
