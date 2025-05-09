@@ -30,18 +30,21 @@ jobs:
         with:
           gradle-version: 8.10.2 # Does not work on newer versions, max supported version is 8.10.2. By using a newer version will be ignored
           
-      - name: Configure signing key
-        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
-        env:
-          KEY_STORE_BASE64: ${{ secrets.KEY_STORE }}
+      - name: Setup Keystore for Signing
         run: |
-          if [ ! -z "${{ secrets.KEY_STORE }}" ]; then
-          echo androidStorePassword='${{ secrets.KEY_STORE_PASSWORD }}' >> gradle.properties
-          echo androidKeyAlias='${{ secrets.ALIAS }}' >> gradle.properties
-          echo androidKeyPassword='${{ secrets.KEY_PASSWORD }}' >> gradle.properties
-          echo androidStoreFile='key.jks' >> gradle.properties
-          echo ${{ secrets.KEY_STORE }} | base64 --decode > key.jks
+          if [ ! -z "$KEY_STORE_BASE64" ]; then
+            echo androidStorePassword='$KEY_STORE_PASSWORD' >> gradle.properties
+            echo androidKeyAlias='$KEY_ALIAS' >> gradle.properties
+            echo androidKeyPassword='$KEY_PASSWORD' >> gradle.properties
+            echo androidStoreFile='key.jks' >> gradle.properties
+            echo "$KEY_STORE_BASE64" | base64 --decode > key.jks
           fi
+        shell: bash
+        env:
+          KEY_STORE_BASE64: ${{ secrets.KEY_STORE_BASE64 }}
+          KEY_STORE_PASSWORD: ${{ secrets.KEY_STORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
