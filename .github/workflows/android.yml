@@ -33,10 +33,10 @@ jobs:
       - name: Setup Keystore for Signing
         run: |
           if [ ! -z "$KEY_STORE_BASE64" ]; then
-            echo androidStorePassword='$KEY_STORE_PASSWORD' >> gradle.properties
-            echo androidKeyAlias='$KEY_ALIAS' >> gradle.properties
-            echo androidKeyPassword='$KEY_PASSWORD' >> gradle.properties
-            echo androidStoreFile='key.jks' >> gradle.properties
+            echo "androidStorePassword=$KEY_STORE_PASSWORD" >> gradle.properties
+            echo "androidKeyAlias=$KEY_ALIAS" >> gradle.properties
+            echo "androidKeyPassword=$KEY_PASSWORD" >> gradle.properties
+            echo "androidStoreFile=key.jks" >> gradle.properties
             echo "$KEY_STORE_BASE64" | base64 --decode > key.jks
           fi
         shell: bash
