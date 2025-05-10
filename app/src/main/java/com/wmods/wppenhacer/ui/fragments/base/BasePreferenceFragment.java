@@ -52,7 +52,10 @@ public abstract class BasePreferenceFragment extends PreferenceFragmentCompat im
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         chanceStates(null);
         monitorPreference();
-        return super.onCreateView(inflater, container, savedInstanceState);
+        View root = super.onCreateView(inflater, container, savedInstanceState);
+        int paddingTop = (int) (32 * requireContext().getResources().getDisplayMetrics().density);
+        root.setPadding(root.getPaddingLeft(), paddingTop, root.getPaddingRight(), root.getPaddingBottom());
+        return root;
     }
 
     @Override
