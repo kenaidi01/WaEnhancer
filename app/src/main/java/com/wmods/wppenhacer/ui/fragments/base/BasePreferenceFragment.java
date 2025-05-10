@@ -53,6 +53,10 @@ public abstract class BasePreferenceFragment extends PreferenceFragmentCompat im
         chanceStates(null);
         monitorPreference();
         View root = super.onCreateView(inflater, container, savedInstanceState);
+        if (!(this.getClass().getSimpleName().equals("GeneralFragment"))) {
+            int paddingTop = (int) (16 * requireContext().getResources().getDisplayMetrics().density);
+            root.setPadding(root.getPaddingLeft(), paddingTop, root.getPaddingRight(), root.getPaddingBottom());
+        }
         return root;
     }
 
