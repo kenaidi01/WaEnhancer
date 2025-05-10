@@ -18,9 +18,6 @@ public class GeneralFragment extends BaseFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         var root = super.onCreateView(inflater, container, savedInstanceState);
-        int actionBarSize = (int) requireContext().getResources().getDimension(
-            androidx.appcompat.R.dimen.abc_action_bar_default_height_material);
-        root.setPadding(0, actionBarSize, 0, 0);
         if (savedInstanceState == null) {
             getChildFragmentManager().beginTransaction().add(R.id.frag_container, new GeneralPreferenceFragment()).commitNow();
         }
