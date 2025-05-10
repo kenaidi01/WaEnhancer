@@ -74,27 +74,46 @@ public class StatusDownload extends Feature {
     private void sharedStatus(FMessageWpp fMessageWpp) {
         try {
             if (!fMessageWpp.isMediaFile()) {
-
                 Intent intent = new Intent();
-                var textStatusComposerActivity = XposedHelpers.findClassIfExists("com.whatsapp.textstatuscomposer.TextStatusComposerActivity", classLoader);
-                if (textStatusComposerActivity != null) {
-                    intent.setClassName(Utils.getApplication().getPackageName(), "com.whatsapp.textstatuscomposer.TextStatusComposerActivity");
-                } else {
-                    intent.setClassName(Utils.getApplication().getPackageName(), "com.whatsapp.textstatuscomposer.TextStatusComposerActivityV2");
+                // Try to find the correct Activity class
+                Class<?> textStatusComposerActivity = XposedHelpers.findClassIfExists("com.whatsapp.textstatuscomposer.TextStatusComposerActivity", classLoader);
+                if (textStatusComposerActivity == null) {
+                    textStatusComposerActivity = XposedHelpers.findClassIfExists("com.whatsapp.textstatuscomposer.TextStatusComposerActivityV2", classLoader);
                 }
-                intent.putExtra("android.intent.extra.TEXT", fMessageWpp.getMessageStr());
-                WppCore.getCurrentActivity().startActivity(intent);
+                if (textStatusComposerActivity == null) {
+                    // Try alternative class names
+                    textStatusComposerActivity = XposedHelpers.findClassIfExists("com.whatsapp.status.composer.TextStatusComposerActivity", classLoader);
+                }
+                
+                if (textStatusComposerActivity != null) {
+                    intent.setClassName(Utils.getApplication().getPackageName(), textStatusComposerActivity.getName());
+                    intent.putExtra("android.intent.extra.TEXT", fMessageWpp.getMessageStr());
+                    WppCore.getCurrentActivity().startActivity(intent);
+                } else {
+                    Utils.showToast("Status composer activity not found. Please update WhatsApp Enhancer.", Toast.LENGTH_LONG);
+                }
                 return;
             }
+            
             var file = fMessageWpp.getMediaFile();
             Intent intent = new Intent();
-            intent.setClassName(Utils.getApplication().getPackageName(), "com.whatsapp.mediacomposer.MediaComposerActivity");
-            intent.putExtra("jids", new ArrayList<>(Collections.singleton("status@broadcast")));
-            intent.putExtra("android.intent.extra.STREAM", new ArrayList<>(Collections.singleton(Uri.fromFile(file))));
-            intent.putExtra("android.intent.extra.TEXT", fMessageWpp.getMessageStr());
-            WppCore.getCurrentActivity().startActivity(intent);
+            // Try to find the correct MediaComposer Activity
+            Class<?> mediaComposerActivity = XposedHelpers.findClassIfExists("com.whatsapp.mediacomposer.MediaComposerActivity", classLoader);
+            if (mediaComposerActivity == null) {
+                mediaComposerActivity = XposedHelpers.findClassIfExists("com.whatsapp.status.composer.MediaComposerActivity", classLoader);
+            }
+            
+            if (mediaComposerActivity != null) {
+                intent.setClassName(Utils.getApplication().getPackageName(), mediaComposerActivity.getName());
+                intent.putExtra("jids", new ArrayList<>(Collections.singleton("status@broadcast")));
+                intent.putExtra("android.intent.extra.STREAM", new ArrayList<>(Collections.singleton(Uri.fromFile(file))));
+                intent.putExtra("android.intent.extra.TEXT", fMessageWpp.getMessageStr());
+                WppCore.getCurrentActivity().startActivity(intent);
+            } else {
+                Utils.showToast("Media composer activity not found. Please update WhatsApp Enhancer.", Toast.LENGTH_LONG);
+            }
         } catch (Throwable e) {
-            Utils.showToast(e.getMessage(), Toast.LENGTH_SHORT);
+            Utils.showToast("Error sharing status: " + e.getMessage(), Toast.LENGTH_LONG);
         }
     }
 
