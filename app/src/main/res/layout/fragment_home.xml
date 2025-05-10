@@ -53,9 +53,9 @@
                 android:clipChildren="false"
                 android:clipToPadding="false"
                 android:orientation="vertical"
-                android:paddingTop="32dp"
+                android:paddingTop="0dp"
                 android:paddingHorizontal="@dimen/m3_appbar_expanded_title_margin_horizontal"
-                android:paddingVertical="?dialogPreferredPadding"
+                android:paddingBottom="0dp"
                 tools:context=".ui.activity.MainActivity">
 
                 <com.google.android.material.card.MaterialCardView
