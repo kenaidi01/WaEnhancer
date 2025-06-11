@@ -215,7 +215,7 @@ public class Unobfuscator {
     public synchronized static Method loadReceiptInChat(ClassLoader classLoader) throws Exception {
         return UnobfuscatorCache.getInstance().getMethod(classLoader, () -> {
             var method = loadReceiptMethod(classLoader);
-            var methodDataList = dexkit.findMethod(new FindMethod().matcher(new MethodMatcher().addUsingString("callCreatorJid").addUsingString("reject").addUsingNumber(6175).addInvoke(DexSignUtil.getMethodDescriptor(method))));
+            var methodDataList = dexkit.findMethod(new FindMethod().matcher(new MethodMatcher().addUsingString("callCreatorJid").addUsingString("reject").addNumber(6175).addInvoke(DexSignUtil.getMethodDescriptor(method))));
             if (methodDataList.isEmpty()) throw new Exception("Receipt method not found");
             return methodDataList.get(0).getMethodInstance(classLoader);
         });
@@ -811,11 +811,18 @@ public class Unobfuscator {
     }
 
     public synchronized static Class loadArchiveChatClass(ClassLoader loader) throws Exception {
-        return UnobfuscatorCache.getInstance().getClass(loader, () -> {
-            var clazz = findFirstClassUsingStrings(loader, StringMatchType.Contains, "archive/set-content-indicator-to-empty");
-            if (clazz == null) throw new Exception("ArchiveHideView method not found");
-            return clazz;
-        });
+        // Coba beberapa string, fallback jika salah satu tidak ketemu
+        String[] candidates = {
+            "archive/set-content-indicator-to-empty",
+            "archive_v2_enabled",
+            "archived_chats",
+            "ArchivedConversationsActivity"
+        };
+        for (String candidate : candidates) {
+            var clazz = findFirstClassUsingStrings(loader, StringMatchType.Contains, candidate);
+            if (clazz != null) return clazz;
+        }
+        throw new Exception("ArchiveHideView method not found");
     }
 
 
